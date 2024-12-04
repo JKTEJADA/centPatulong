@@ -11,6 +11,11 @@
 
 <body class="antialiased bg-gray-100">
     <div class="container mx-auto p-6">
+
+        @if($errors->any())
+            {!! implode('', $errors->all('<div>:message</div>')) !!}
+        @endif
+
         <h1 class="text-2xl font-bold mb-4">Input Route</h1>
         <form action="{{ route('routes.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
