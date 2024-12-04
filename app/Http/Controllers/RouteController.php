@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Route;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+
 
 class RouteController extends Controller
 {
@@ -32,6 +32,16 @@ class RouteController extends Controller
                 ->withInput();
         }
 
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time().'.'.$image->getClientOriginalExtension();
+            $image->storeAs('images', $imageName, 'public');
+            $imagePath = 'images/' . $imageName;
+        } else {
+            $imagePath = null;
+        }
+
+
         $imagePath = $request->file('image')->store('images', 'public');
 
         $route = new Route();
@@ -43,12 +53,18 @@ class RouteController extends Controller
         $route->image_path = $imagePath;
         $route->save();
 
-        return redirect()->route('routes.index');
+        return redirect()->route('routes.index')->with('success', 'Route created successfully.');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $routes = Route::all();
-        return view('results', compact('routes'));
+        $search = $request->input('search');
+        $routes = Route::query()
+            ->where('route_name', 'LIKE', "%{$search}%")
+            ->orWhere('departure_location', 'LIKE', "%{$search}%")
+            ->orWhere('destination', 'LIKE', "%{$search}%")
+            ->get();
+
+        return view('results', compact('routes', 'search'));
     }
 }

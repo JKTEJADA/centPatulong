@@ -12,6 +12,14 @@
 <body class="antialiased bg-gray-100">
     <div class="container mx-auto p-6">
         <h1 class="text-2xl font-bold mb-4">Route Results</h1>
+
+        <!-- Search Form -->
+        <form action="{{ route('routes.index') }}" method="GET" class="mb-4">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search routes..."
+                class="border p-2 rounded">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
+        </form>
+
         <table class="min-w-full bg-white">
             <thead>
                 <tr>
@@ -27,7 +35,7 @@
             <tbody>
                 @foreach ($routes as $route)
                 <tr>
-                    <td class="py-2">{{ $route->route_id }}</td>
+                    <td class="py-2">{{ $route->id }}</td>
                     <td class="py-2">{{ $route->route_name }}</td>
                     <td class="py-2">{{ $route->departure_location }}</td>
                     <td class="py-2">{{ $route->destination }}</td>
@@ -44,7 +52,6 @@
                 </tr>
                 @endforeach
             </tbody>
-
         </table>
     </div>
 </body>
